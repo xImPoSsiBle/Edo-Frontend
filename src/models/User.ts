@@ -1,6 +1,5 @@
-export interface IUser {
-    id: number;
-    name: string;
+export interface UserResponse {
     email: string;
-    password: string;
+    username: string;
+    token: string;
 }

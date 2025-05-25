@@ -3,6 +3,7 @@ import { FaLock, FaUser } from "react-icons/fa6"
 import { MdOutlineEmail } from "react-icons/md"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux"
 import { registerUser } from "../../store/reducer/ActionCreators"
+import { useNavigate } from "react-router-dom"
 
 
 const Register = () => {
@@ -11,18 +12,22 @@ const Register = () => {
     const [password, setPassword] = useState('')
 
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     const { isLoading, error } = useAppSelector(state => state.user)
 
-    const handleRegister = () => {
-        if(!username || !email || !password) return alert('Заполните все поля')
-        dispatch(registerUser({ username, email, password }))
+    const handleRegister = async () => {
+        if (!username || !email || !password) return alert('Заполните все поля')
+
+        await dispatch(registerUser({ username, email, password })).unwrap();
+        navigate("/login", { replace: true });
+
     }
 
     return (
         <div className="w-full h-screen flex">
-            {error && <p className="text-red-500">{error}</p>}
-            {isLoading && <p>Loading...</p>}
+            {error && <p className="text-white fixed">{error}</p>}
+            {isLoading && <p className="text-white fixed">Loading...</p>}
             <div className="w-[60%] flex flex-col items-center justify-center h-full bg-linear-to-b from-[#0575E6] via-[#02298A] to-[#021B79] overflow-hidden">
                 <div className="text-white mr-35">
                     <p className="text-5xl">Документооборот</p>

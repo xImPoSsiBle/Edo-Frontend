@@ -1,12 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoPaperPlaneOutline } from "react-icons/io5";
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { getDocsById } from "../../store/reducer/ActionCreators";
+import axios from "axios";
+import DocumentEditor from "../DocumentEditor.tsx/DocumentEditor";
 
 
 const DocumentDetails = () => {
     const [isOpen, setIsOpen] = useState(false)
+    const { id } = useParams();
+
+    const dispatch = useAppDispatch();
+    const { token } = useAppSelector(state => state.user);
+    const { docDetails } = useAppSelector(state => state.document);
+
+    const downloadDocument = async (id?: number) => {
+        if (!id) return
+
+        const resp = await axios.get(`http://localhost:8080/api/docs/${id}/download`, {
+            headers: { Authorization: `Bearer ${token}` },
+            responseType: "blob", // <-- важно!
+        });
+
+        const blob = resp.data;
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = docDetails?.name || "document.docx";
+        link.click();
+
+    }
+
+
+    useEffect(() => {
+        if (id) {
+            dispatch(getDocsById(id));
+        }
+    }, [id]);
 
     return (
         <>
@@ -48,11 +81,11 @@ const DocumentDetails = () => {
             <div className="w-full h-[85px] flex items-center bg-[#D9D9D9] mt-25">
                 <div className="flex w-[82%] ml-70 justify-between  ">
                     <div className="flex items-center">
-                        <Link to={'/'}>
+                        <Link to={'/inbox'}>
                             <FaArrowLeftLong className="w-8 h-8" />
                         </Link>
                         <span className="text-3xl text-start ml-10">
-                            Working contract
+                            {docDetails?.name}
                         </span>
                     </div>
                     <div className="flex items-center gap-10 mr-10">
@@ -65,18 +98,14 @@ const DocumentDetails = () => {
                         <span className="text-base">
                             Save in Draft
                         </span>
-                        <span className="text-base">
+                        <span className="text-base" onClick={() => downloadDocument(docDetails?.id)}>
                             Download
                         </span>
                     </div>
                 </div>
             </div>
-            <div className='mt-25 mb-0 w-[80%] ml-69'>
-                {/* <iframe
-                    src={`https://docs.google.com/document/d/1GsOVBph6ev6YJX1-3cZLfX6-K3xEHBYy?tab=t.0&embedded=true`}
-                    className="w-full h-[90vh]"
-                /> */}
-
+            <div className='mt-5 mb-0 w-[80%] ml-69'>
+                <DocumentEditor docDetails={docDetails} />
             </div>
         </>
     )

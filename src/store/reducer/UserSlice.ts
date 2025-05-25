@@ -1,45 +1,47 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { IUser } from "../../models/User";
+import type { UserResponse } from "../../models/User";
 import { LoginUser, registerUser } from "./ActionCreators";
+import { useNavigate } from "react-router-dom";
 
 interface UserState {
-    user: IUser | null,
-    isAuth: boolean,
-    isLoading: boolean
-    error: string,
+  user: { email: string; username: string } | null,
+  isAuth: boolean,
+  isLoading: boolean
+  error: string,
+  token: string | null,
 }
 
+const savedToken = localStorage.getItem('token');
+const savedUser = localStorage.getItem('user');
+
+
 const initialState: UserState = {
-    user: null,
-    isAuth: false,
-    isLoading: false,
-    error: '',
+  user: savedUser ? JSON.parse(savedUser) : null,
+  token: savedToken,
+  isAuth: Boolean(savedToken),
+  isLoading: false,
+  error: '',
 }
 
 export const UserSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-        login: (state, action) => {
-            state.user = action.payload;
-            state.isAuth = true;
-        },
-        register: (state, action) => {
-            state.user = action.payload;
-            state.isAuth = true;
-        },
-        logout: (state) => {
-            state.user = null;
-            state.isAuth = false;
-        },
+  name: 'user',
+  initialState,
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.isAuth = false;
+      state.token = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     },
-    extraReducers: (builder) => {
+  },
+  extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
         state.error = "";
       })
-      .addCase(registerUser.fulfilled, (state, action: PayloadAction<IUser>) => {
+      .addCase(registerUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
         state.isLoading = false;
         state.user = action.payload;
         state.isAuth = true;
@@ -52,10 +54,17 @@ export const UserSlice = createSlice({
         state.isLoading = true;
         state.error = "";
       })
-      .addCase(LoginUser.fulfilled, (state, action: PayloadAction<IUser>) => {
+      .addCase(LoginUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = { email: action.payload.email, username: action.payload.username };
+        console.log(action.payload.username, action.payload.email)
+        state.token = action.payload.token;
         state.isAuth = true;
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify({
+          email: action.payload.email,
+          username: action.payload.username,
+        }));
       })
       .addCase(LoginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -65,4 +74,4 @@ export const UserSlice = createSlice({
 })
 
 export default UserSlice.reducer
-export const { login, logout } = UserSlice.actions;
+export const { logout } = UserSlice.actions;

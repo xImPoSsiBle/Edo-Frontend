@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { FiDownload, FiEdit2, FiMoreHorizontal, FiTrash2 } from 'react-icons/fi'
 import { SlLink } from "react-icons/sl";
 
 import type { IDoc } from '../../models/Document';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface IDocumentsTableItemsProps {
     doc: IDoc,
@@ -14,6 +14,17 @@ interface IDocumentsTableItemsProps {
 
 const DocumentsTableItems: React.FC<IDocumentsTableItemsProps> = ({ doc, isSelected, handleSelect }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [createdDate, setCreatedDate] = useState('');
+    const [modifiedDate, setModifiedDate] = useState('');
+    const { pathname } = useLocation()
+
+    useEffect(() => {
+        const date = new Date(doc.created);
+        setCreatedDate(`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`);
+
+        const modified = new Date(doc.modified);
+        setModifiedDate(`${modified.getDate()}-${modified.getMonth() + 1}-${modified.getFullYear()}`);
+    }, [doc])
 
     return (
         <tr className="border-t border-gray-300 hover:bg-gray-50 transition">
@@ -26,24 +37,26 @@ const DocumentsTableItems: React.FC<IDocumentsTableItemsProps> = ({ doc, isSelec
                 </span>
             </td>
             <td className="p-3 font-medium text-gray-900">
-                <Link to={`document/${doc.id}`}>
+                <Link to={`/document/${doc.id}`}>
                     <div className="flex items-center gap-2">
                         <div>
                             <p>{doc.name}</p>
-                            <div className={`inline-block text-xs text-white px-2 py-0.5 rounded  ${doc.tagColor}`}>
+                            <div className={`inline-block text-xs px-2 py-0.5 rounded`}>
                                 {doc.tag}
                             </div>
                         </div>
                     </div>
                 </Link>
             </td>
-            <td className="p-3">{doc.recipient}</td>
-            <td className="p-3">{doc.created}</td>
             <td className="p-3">
-                <span className={`inline-block w-2 h-2 rounded-full mr-2 ${doc.statusColor}`}></span>
+                {pathname === '/sent' ? doc.recipient.email : doc.sender.email}
+            </td>
+            <td className="p-3">{createdDate}</td>
+            <td className="p-3">
+                <span className={`inline-block w-2 h-2 rounded-full mr-2`}></span>
                 {doc.status}
             </td>
-            <td className="p-3">{doc.modified}</td>
+            <td className="p-3">{modifiedDate}</td>
             <td className="p-3 text-right space-x-2">
                 <div className='w-[80%] flex justify-between relative'>
                     <button><FiDownload width={50} /></button>
