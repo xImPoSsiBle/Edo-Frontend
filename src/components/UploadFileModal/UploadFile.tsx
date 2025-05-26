@@ -30,10 +30,18 @@ const UploadFileModal: React.FC<UploadFileModalProps> = ({ setIsOpen }) => {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(response)
       setIsOpen(false);
       alert("Документ успешно отправлен");
+      window.location.reload();
     } catch (err) {
-      console.error("Ошибка отправки документа", err);
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 404) {
+          alert(err.response.data.message);
+        } else {
+          alert("Произошла неизвестная ошибка: " + err.response?.status);
+        }
+      }
     }
   };
 

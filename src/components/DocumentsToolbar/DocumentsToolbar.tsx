@@ -21,10 +21,6 @@ const DocumentsToolbar: React.FC<DocumentsToolbarProps> = ({ search, setSearch, 
         <div className='flex justify-between'>
           <div className='flex justify-between w-[30%] mt-3'>
             <div className='flex items-center justify-center'>
-              <input type='checkbox' id='select-all' className='cursor-pointer' />
-              <label className='ml-2 text-base cursor-pointer' htmlFor='select-all'>
-                Select all
-              </label>
             </div>
             <div>
               <button className='bg-[#FFB27D] hover:bg-orange-500 transition px-5 py-2 rounded-2xl text-white flex items-center cursor-pointer'>
