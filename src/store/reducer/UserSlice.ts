@@ -1,7 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { UserResponse } from "../../models/User";
 import { LoginUser, registerUser } from "./ActionCreators";
-import { useNavigate } from "react-router-dom";
 
 interface UserState {
   user: { email: string; username: string } | null,
@@ -44,7 +43,7 @@ export const UserSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
         state.isLoading = false;
         state.user = action.payload;
-        state.isAuth = true;
+        state.isAuth = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux"
 import { logout } from "../../store/reducer/UserSlice";
+import { FaUser } from "react-icons/fa";
 
 export default function Header() {
     const { isAuth, user } = useAppSelector(state => state.user)
@@ -11,7 +12,7 @@ export default function Header() {
             {isAuth
                 ? <div className="flex gap-4 items-center justify-center mr-5" onClick={() => dispatch(logout())}>
                     <span className="text-justify">{user?.username}</span>
-                    <img className="w-10 h-10 rounded-full" src="https://i.pravatar.cc/40?u=erbol" alt="avatar" />
+                    <FaUser className="w-7 h-7 rounded-full" />
                 </div>
                 : <div className="flex gap-4 mr-5">
                     <Link to="/login">

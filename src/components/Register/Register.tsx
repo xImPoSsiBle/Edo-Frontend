@@ -4,7 +4,7 @@ import { MdOutlineEmail } from "react-icons/md"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux"
 import { registerUser } from "../../store/reducer/ActionCreators"
 import { useNavigate } from "react-router-dom"
-
+import { FaLongArrowAltLeft } from "react-icons/fa";
 
 const Register = () => {
     const [username, setUsername] = useState('')
@@ -19,8 +19,8 @@ const Register = () => {
     const handleRegister = async () => {
         if (!username || !email || !password) return alert('Заполните все поля')
 
-        await dispatch(registerUser({ username, email, password })).unwrap();
-        navigate("/login", { replace: true });
+        await dispatch(registerUser({ username, email, password }));
+        navigate("/login");
 
     }
 
@@ -29,6 +29,10 @@ const Register = () => {
             {error && <p className="text-white fixed">{error}</p>}
             {isLoading && <p className="text-white fixed">Loading...</p>}
             <div className="w-[60%] flex flex-col items-center justify-center h-full bg-linear-to-b from-[#0575E6] via-[#02298A] to-[#021B79] overflow-hidden">
+                <div className="flex text-white absolute top-5 left-5 gap-2 cursor-pointer" onClick={() => navigate('/login')}>
+                    <FaLongArrowAltLeft className="w-10 h-9 color-white" />
+                    <span className="text-2xl">Логин</span>
+                </div>
                 <div className="text-white mr-35">
                     <p className="text-5xl">Документооборот</p>
                     <p className="text-xl">Электронный документооборот</p>

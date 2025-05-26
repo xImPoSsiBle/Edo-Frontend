@@ -15,6 +15,7 @@ const Sidebar = () => {
         <p className="cursor-pointer" onClick={() => handleClick('/sent')}>Отправлено</p>
         <p className="cursor-pointer" onClick={() => handleClick('/inbox')}>Входящие</p>
         <p className="cursor-pointer" onClick={() => handleClick('/approved')}>Утвержденные</p>
+        <p className="cursor-pointer" onClick={() => handleClick('/rejected')}>Отклоненные</p>
       </div>
     </aside>
   )

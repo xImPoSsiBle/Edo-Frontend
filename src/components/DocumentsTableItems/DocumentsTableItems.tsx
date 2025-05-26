@@ -14,7 +14,7 @@ interface IDocumentsTableItemsProps {
     handleDelete: (id: number) => void
 }
 
-const DocumentsTableItems: React.FC<IDocumentsTableItemsProps> = ({ doc, isSelected, handleSelect, handleDelete }) => {
+const DocumentsTableItems: React.FC<IDocumentsTableItemsProps> = ({ doc, handleDelete }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [createdDate, setCreatedDate] = useState('');
     const [modifiedDate, setModifiedDate] = useState('');
@@ -66,7 +66,7 @@ const DocumentsTableItems: React.FC<IDocumentsTableItemsProps> = ({ doc, isSelec
                     <div className={`absolute top-5 right-[-15px] border-[0.5px] border-gray-200 w-[100px] bg-white rounded-md z-10 ${isOpen ? 'block' : 'hidden'} hover:bg-gray-100 cursor-pointer`}>
                         {doc.sender.email === user?.email && (
                             <button onClick={() => handleDelete(doc.id)} className="flex items-center gap-2 p-2">
-                                <FiTrash2 /><span>Delete</span>
+                                <FiTrash2 /><span>Удалить</span>
                             </button>
                         )}
                     </div>

@@ -35,11 +35,10 @@ const UploadFileModal: React.FC<UploadFileModalProps> = ({ setIsOpen }) => {
       alert("Документ успешно отправлен");
       window.location.reload();
     } catch (err) {
+      alert("Пользователь не найден");
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 404) {
           alert(err.response.data.message);
-        } else {
-          alert("Произошла неизвестная ошибка: " + err.response?.status);
         }
       }
     }

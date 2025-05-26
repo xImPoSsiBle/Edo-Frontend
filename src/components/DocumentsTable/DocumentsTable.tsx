@@ -66,11 +66,11 @@ const DocumentTable: React.FC<DocumentsTableProps> = ({ title }) => {
                         <thead className="text-left">
                             <tr className="text-gray-500">
                                 <th className="p-3"></th>
-                                <th className="p-3">Document Name</th>
-                                <th className="p-3">{pathname === '/sent' ? 'Recipient' : 'Sender'}</th>
-                                <th className="p-3">Date Created</th>
-                                <th className="p-3">Status</th>
-                                <th className="p-3">Modified</th>
+                                <th className="p-3">Название документа</th>
+                                <th className="p-3">{pathname === '/sent' ? 'Получатель' : 'Отправитель'}</th>
+                                <th className="p-3">Создан</th>
+                                <th className="p-3">Статус</th>
+                                <th className="p-3">Изменен</th>
                                 <th className="p-3 text-right"></th>
                             </tr>
                         </thead>

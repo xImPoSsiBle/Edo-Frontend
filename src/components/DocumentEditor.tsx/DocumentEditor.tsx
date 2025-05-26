@@ -10,7 +10,7 @@ interface IDocDetails {
 }
 
 const DocumentEditor: React.FC<IDocDetails> = ({ docDetails }) => {
-    const { token } = useAppSelector(state => state.user);
+    const { token, user } = useAppSelector(state => state.user);
 
     const [htmlContent, setHtmlContent] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -41,7 +41,7 @@ const DocumentEditor: React.FC<IDocDetails> = ({ docDetails }) => {
         fetchAndConvert();
     }, [docDetails]);
 
-    const handleSave = async () => {
+    const handleSaveApprove = async () => {
         if (!docDetails?.id) return;
         try {
             const response = await axios.put(
@@ -62,6 +62,27 @@ const DocumentEditor: React.FC<IDocDetails> = ({ docDetails }) => {
         }
     };
 
+    const handleSaveReject = async () => {
+        if (!docDetails?.id) return;
+        try {
+            const response = await axios.put(
+                `http://localhost:8080/api/docs/${docDetails.id}/reject`,
+                null,
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+            if (response.status === 200) {
+                alert("Документ отклонён!");
+                navigate('/')
+            }
+
+        } catch (err) {
+            console.error("Ошибка при отклонении документа:", err);
+            alert("Не удалось отклонить документ");
+        }
+    };
+
     if (!docDetails) {
         return <div>Загрузка метаданных документа...</div>;
     }
@@ -78,13 +99,24 @@ const DocumentEditor: React.FC<IDocDetails> = ({ docDetails }) => {
                 onInput={e => setHtmlContent(e.currentTarget.innerHTML)}
                 className="border p-4 min-h-[300px] h-[600px] bg-white overflow-y-scroll"
             />
-            <button
-                onClick={handleSave}
-                disabled={!htmlContent}
-                className="bg-[#FFB27D] hover:bg-orange-500 transition text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                Утвердить
-            </button>
+            {docDetails.recipient.email == user?.email &&
+                <div className="flex gap-4">
+                    <button
+                        onClick={handleSaveApprove}
+                        disabled={!htmlContent}
+                        className="bg-[#FFB27D] hover:bg-orange-500 transition text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Утвердить
+                    </button>
+                    <button
+                        onClick={handleSaveReject}
+                        disabled={!htmlContent}
+                        className="bg-[#FFB27D] hover:bg-orange-500 transition text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Отклонить
+                    </button>
+                </div>
+            }
         </div>
     );
 };

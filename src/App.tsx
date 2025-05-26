@@ -34,6 +34,7 @@ export default function App() {
         <Route path="/inbox" element={<DocumentTable title='Входящие'/>} />
         <Route path="/sent" element={<DocumentTable title='Отправлено'/>} />
         <Route path="/approved" element={<DocumentTable title='Утвержденные'/>} />
+        <Route path="/rejected" element={<DocumentTable title='Отклоненные'/>} />
         <Route path="/document/:id" element={<DocumentDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
